@@ -7,8 +7,10 @@ import { TextureLoader } from 'three';
 
 
 const scene = new THREE.Scene();  //Create a scene
+//scene.background = new THREE.Color( 0xff0000 );
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000); //FOV, Aspect Ratio, Near, Far
-const renderer = new THREE.WebGLRenderer();
+const renderer =  new THREE.WebGLRenderer( { alpha: true } ); // init like this
+renderer.setClearColor( 0xffffff, 0 ); // second param is opacity, 0 => transparent
 
 console.log(scene);
 console.log(camera);
@@ -21,8 +23,8 @@ document.body.appendChild(renderer.domElement); //Add the renderer to the body; 
 // Crear el canvas HTML y usarlo como textura
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = 1024;  // Tamaño del canvas
-canvas.height = 1080;  // Tamaño del canvas
+canvas.width = 1225;  // Tamaño del canvas
+canvas.height = 672;  // Tamaño del canvas
 
 const texture = new THREE.CanvasTexture(canvas);  // Usamos el canvas como textura
 texture.minFilter = THREE.LinearFilter;  // Asegurarse de que la textura se vea bien al hacer zoom
