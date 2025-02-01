@@ -54,13 +54,13 @@ ctx.fillText('Contenido del Canvas', 50, 50);
 
 //------------------
 
-const width = 2;
+/*const width = 2;
 const height = 1;
 const intensity = 1;
 const rectLight = new THREE.RectAreaLight( 0xffffff, intensity,  width, height );
 rectLight.position.set( -1, 2.5, 1 );
 rectLight.lookAt( 0, 0, 0 );
-scene.add( rectLight )
+scene.add( rectLight )*/
 
 //const rectLightHelper = new RectAreaLightHelper( rectLight );
 //rectLight.add( rectLightHelper );
@@ -78,31 +78,72 @@ window.addEventListener('mousemove', (event) => {
 
 //------------------
 
-camera.position.z = 5.5; //Move the camera back
+camera.position.z = 6; //Move the camera back
 camera.position.y = 1.5; //Move the camera back
 camera.position.x = 0.5; //Move the camera back
 camera.rotation.x = -0.5; //Tilt the camera down
 
+//------------------
+const TextureLoader = new THREE.TextureLoader();
+const wallTexture = TextureLoader.load('resources/textures/rough-wall-texture.jpg');
 
+// Crear una forma con un agujero cuadrado en el medio
+const shape = new THREE.Shape();
+
+// Dibujar el contorno exterior del box
+shape.moveTo(-7.5, -5);
+shape.lineTo(7.5, -5);
+shape.lineTo(7.5, 5);
+shape.lineTo(-7.5, 5);
+shape.lineTo(-7.5, -5);
+
+// Crear un agujero cuadrado en el medio
+const hole = new THREE.Path();
+hole.moveTo(-2.5, -2.5);
+hole.lineTo(2.5, -2.5);
+hole.lineTo(2.5, 2.5);
+hole.lineTo(-2.5, 2.5);
+hole.lineTo(-2.5, -2.5);
+shape.holes.push(hole);
+
+// Crear la geometría extruida
+const extrudeSettings = {
+  depth: 0.2,
+  bevelEnabled: false,
+  UVGenerator: THREE.ExtrudeGeometry.WorldUVGenerator
+};
+const windowWall = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+// Crear el material y la malla
+const windowWallMaterial = new THREE.MeshBasicMaterial({ map: wallTexture, color: 0x3D85C6 });
+const windowWallMesh = new THREE.Mesh(windowWall, windowWallMaterial);
+
+// Posicionar la malla
+windowWallMesh.position.set(8, 0, 5);
+windowWallMesh.rotation.y = Math.PI / 2;  // Rotar la malla
+
+// Añadir la malla a la escena
+scene.add(windowWallMesh);
+
+//------------------
+
+//Pared
+
+
+const wall = new THREE.BoxGeometry( 15, 10, 0.2 );
+const wallMaterial = new THREE.MeshBasicMaterial( {map: wallTexture, color: 0x3D85C6} );
+const wallMesh = new THREE.Mesh( wall, wallMaterial );
+wallMesh.position.set(1,0,-2.9);
+console.log(wallMesh);
+group.add( wallMesh );
+//scene.add( wallMesh );
+
+
+//------------------
 
 const loader = new GLTFLoader();
 
-let model;  
 
-/*loader.load(
-  'resources/retro_computer_setup/scene.gltf',
-  (gltf) => {
-      model = gltf.scene;
-      //model.rotation.y = 4.7; // Rotar el modelo
-      model.scale.set(0.05, 0.05, 0.05); // Escalar el modelo
-      //scene.add(model); // Agregar el modelo a la escena
-      group.add(model);  // Añadir el plano al grupo
-  },
-  undefined,
-  (error) => {
-      console.error('Error al cargar el modelo:', error);
-  }
-);*/
 
 let officeLamp_model;  
 loader.load(
@@ -158,14 +199,31 @@ loader.load(
 
 let officeTable_model;
 loader.load(
-  'resources/office_table/scene.gltf',
+  'resources/office_desk/scene.gltf',
   (gltf) => {
     officeTable_model = gltf.scene;
       //model.rotation.y = 4.7; // Rotar el modelo
-      officeTable_model.scale.set(5, 5, 5); // Escalar el modelo
-      officeTable_model.position.set(0.6, -3.8, 0);  // Colocar el modelo en la posición deseada
+      officeTable_model.scale.set(25, 25, 27); // Escalar el modelo
+      officeTable_model.position.set(-3.8, -4.61, -2.346);  // Colocar el modelo en la posición deseada
       //scene.add(model); // Agregar el modelo a la escena
       group.add(officeTable_model);  // Añadir el plano al grupo
+  },
+  undefined,
+  (error) => {
+      console.error('Error al cargar el modelo:', error);
+  }
+);
+
+let board_model;
+loader.load(
+  'resources/low_poly_notice_board/scene.gltf',
+  (gltf) => {
+    board_model = gltf.scene;
+    board_model.rotation.x = Math.PI/2; // Rotar el modelo
+      board_model.scale.set(40, 40, 40); // Escalar el modelo
+      board_model.position.set(1.8, 3, -2);  // Colocar el modelo en la posición deseada
+      //scene.add(model); // Agregar el modelo a la escena
+      group.add(board_model);  // Añadir el plano al grupo
   },
   undefined,
   (error) => {
@@ -176,11 +234,12 @@ loader.load(
 scene.add(group);  // Añadir el grupo a la escena
 
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
+//const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+//scene.add(ambientLight);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-directionalLight.position.set(5, 10, 7.5);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+directionalLight.position.set(0, 5, 0);
+//directionalLight.rotateX(Math.PI / 2);
 scene.add(directionalLight);
 
 
@@ -191,11 +250,16 @@ function createImages(imagesrc){
 }
 var imgPcWall = createImages('resources/sprites/computer/windowswallpaperXL');
 
+//------------------
+
+//------------------
+
+
 function animate() {
     requestAnimationFrame(animate); //Call the animate function
     //if (model){
       //model.rotation.y += 0.01; //Rotate the mesh
-      //group.rotation.y += 0.002; //Rotate the mesh
+      //group.rotation.y += 0.01; //Rotate the mesh
       //model.rotation.y += 0.01; //Rotate the mesh
     //}
 
