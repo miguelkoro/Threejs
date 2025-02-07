@@ -12,10 +12,43 @@
         background: rgb(30,61,214);
         background: radial-gradient(circle, rgba(30,61,214,1) 0%, rgba(189,17,52,1) 100%);
       }
+      .progress-bar-container {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.918);
+        background: rgb(30,61,214);
+        background: radial-gradient(circle, rgba(30,61,214,1) 0%, rgba(189,17,52,1) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #progress-bar {
+        width: 25%;
+        margin-top: 0.5%;
+        height: 2%;
+      }
+
+      label {
+        color: white;
+        font-size: 1.2rem;
+      }
+    
     </style>
   </head>
   <body>
     <div id="app"></div>
+    <div class="progress-bar-container">
+      <label for="progress-bar">Loading...</label>
+      <progress id="progress-bar" value="0" max="100"></progress>
+    </div>
+    <!--<script src="/main.js" type="module"></script>-->
+    <script type="module" src="/src/load.js"></script>
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/canvasTests.js"></script>
   </body>
