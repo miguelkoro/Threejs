@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import Load from '/src/load.js'; 
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 
 //import { TextureLoader } from 'three';
@@ -58,6 +58,65 @@ ctx.fillText('Contenido del Canvas', 50, 50);
 
 //------------------
 
+// Variables para el control del teclado
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+
+const direction = new THREE.Vector3();
+const right = new THREE.Vector3();
+const up = new THREE.Vector3(0, 1, 0);
+
+window.addEventListener('keydown', (event) => {
+  switch (event.code) {
+    case 'KeyW':
+      moveForward = true;
+      break;
+    case 'KeyS':
+      moveBackward = true;
+      break;
+    case 'KeyA':
+      moveLeft = true;
+      break;
+    case 'KeyD':
+      moveRight = true;
+      break;
+  }
+});
+
+window.addEventListener('keyup', (event) => {
+  switch (event.code) {
+    case 'KeyW':
+      moveForward = false;
+      break;
+    case 'KeyS':
+      moveBackward = false;
+      break;
+    case 'KeyA':
+      moveLeft = false;
+      break;
+    case 'KeyD':
+      moveRight = false;
+      break;
+  }
+});
+
+
+const controls = new PointerLockControls(camera, document.body);
+
+document.addEventListener('click', () => {
+  controls.lock();
+});
+
+controls.addEventListener('lock', () => {
+  console.log('Pointer locked');
+});
+
+controls.addEventListener('unlock', () => {
+  console.log('Pointer unlocked');
+});
+
 /*const width = 2;
 const height = 1;
 const intensity = 1;
@@ -83,63 +142,18 @@ window.addEventListener('mousemove', (event) => {
 //------------------
 
 camera.position.z = 6; //Move the camera back
-camera.position.y = 1.5; //Move the camera back
+camera.position.y = 7; //Move the camera back
 camera.position.x = 0.5; //Move the camera back
 camera.rotation.x = -0.5; //Tilt the camera down
 
 //------------------
-const TextureLoader = new THREE.TextureLoader();
-const wallTexture = TextureLoader.load('resources/textures/rough-wall-texture.jpg');
 
-// Crear una forma con un agujero cuadrado en el medio
-const shape = new THREE.Shape();
-
-// Dibujar el contorno exterior del box
-shape.moveTo(-7.5, -5);
-shape.lineTo(7.5, -5);
-shape.lineTo(7.5, 5);
-shape.lineTo(-7.5, 5);
-shape.lineTo(-7.5, -5);
-
-// Crear un agujero cuadrado en el medio
-const hole = new THREE.Path();
-hole.moveTo(-2.5, -2.5);
-hole.lineTo(2.5, -2.5);
-hole.lineTo(2.5, 2.5);
-hole.lineTo(-2.5, 2.5);
-hole.lineTo(-2.5, -2.5);
-shape.holes.push(hole);
-
-// Crear la geometría extruida
-const extrudeSettings = {
-  depth: 0.2,
-  bevelEnabled: false,
-  UVGenerator: THREE.ExtrudeGeometry.WorldUVGenerator
-};
-const windowWall = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-
-// Crear el material y la malla
-const windowWallMaterial = new THREE.MeshBasicMaterial({ map: wallTexture, color: 0x3D85C6 });
-const windowWallMesh = new THREE.Mesh(windowWall, windowWallMaterial);
-
-// Posicionar la malla
-windowWallMesh.position.set(8, 0, 5);
-windowWallMesh.rotation.y = Math.PI / 2;  // Rotar la malla
-
-// Añadir la malla a la escena
-scene.add(windowWallMesh);
 
 //------------------
 
 //Pared
 
 
-const wall = new THREE.BoxGeometry( 15, 10, 0.2 );
-const wallMaterial = new THREE.MeshBasicMaterial( {map: wallTexture, color: 0x3D85C6} );
-const wallMesh = new THREE.Mesh( wall, wallMaterial );
-wallMesh.position.set(1,0,-2.9);
-console.log(wallMesh);
-group.add( wallMesh );
 //scene.add( wallMesh );
 
 
@@ -178,14 +192,27 @@ const loader = loadjs.loadingManager();
 
 let officeLamp_model;  
 loader.load(
-  'resources/office_lamp/scene.gltf',
+  'resources/Habitacion/ThreejsBlend.gltf',
   (gltf) => {
       officeLamp_model = gltf.scene;
-      officeLamp_model.rotation.y = 4; // Rotar el modelo
-      officeLamp_model.scale.set(0.05, 0.05, 0.05); // Escalar el modelo
-      officeLamp_model.position.set(4.2, 0, -1.2);
+      //officeLamp_model.rotation.y = 4; // Rotar el modelo
+      officeLamp_model.scale.set(10, 10, 10); // Escalar el modelo
+      //officeLamp_model.position.set(4.2, 0, -1.2);
       //scene.add(model); // Agregar el modelo a la escena
       group.add(officeLamp_model);  // Añadir el plano al grupo
+
+
+      // Crear un elemento div para el punto
+      const point = document.createElement('div');
+      point.style.position = 'absolute';
+      point.style.width = '4px';
+      point.style.height = '4px';
+      point.style.backgroundColor = 'white';
+      point.style.borderRadius = '50%';
+      point.style.left = '50%';
+      point.style.top = '50%';
+      point.style.transform = 'translate(-50%, -50%)';
+      document.body.appendChild(point);
   },
   undefined,
   (error) => {
@@ -193,22 +220,7 @@ loader.load(
   }
 );
 
-let lavaLamp_model;  
-loader.load(
-  'resources/lava_lamp/scene.gltf',
-  (gltf) => {
-    lavaLamp_model = gltf.scene;
-    lavaLamp_model.rotation.y = 4; // Rotar el modelo
-    lavaLamp_model.scale.set(0.0025, 0.0025, 0.0025); // Escalar el modelo
-    lavaLamp_model.position.set(3.4, 0, -1.3);
-      //scene.add(model); // Agregar el modelo a la escena
-      group.add(lavaLamp_model);  // Añadir el plano al grupo
-  },
-  undefined,
-  (error) => {
-      console.error('Error al cargar el modelo:', error);
-  }
-);
+
 
 let test_model;  
 loader.load(
@@ -228,45 +240,14 @@ loader.load(
 );
 
 
-let officeTable_model;
-loader.load(
-  'resources/office_desk/scene.gltf',
-  (gltf) => {
-    officeTable_model = gltf.scene;
-      //model.rotation.y = 4.7; // Rotar el modelo
-      officeTable_model.scale.set(25, 25, 27); // Escalar el modelo
-      officeTable_model.position.set(-3.8, -4.61, -2.346);  // Colocar el modelo en la posición deseada
-      //scene.add(model); // Agregar el modelo a la escena
-      group.add(officeTable_model);  // Añadir el plano al grupo
-  },
-  undefined,
-  (error) => {
-      console.error('Error al cargar el modelo:', error);
-  }
-);
 
-let board_model;
-loader.load(
-  'resources/low_poly_notice_board/scene.gltf',
-  (gltf) => {
-    board_model = gltf.scene;
-    board_model.rotation.x = Math.PI/2; // Rotar el modelo
-      board_model.scale.set(40, 40, 40); // Escalar el modelo
-      board_model.position.set(1.8, 3, -2);  // Colocar el modelo en la posición deseada
-      //scene.add(model); // Agregar el modelo a la escena
-      group.add(board_model);  // Añadir el plano al grupo
-  },
-  undefined,
-  (error) => {
-      console.error('Error al cargar el modelo:', error);
-  }
-);
+
 
 scene.add(group);  // Añadir el grupo a la escena
 
 
-//const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-//scene.add(ambientLight);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
 directionalLight.position.set(0, 5, 0);
@@ -284,7 +265,7 @@ var imgPcWall = createImages('resources/sprites/computer/windowswallpaperXL');
 //------------------
 
 //------------------
-
+const initialCameraY = camera.position.y;
 
 function animate() {
     requestAnimationFrame(animate); //Call the animate function
@@ -301,8 +282,32 @@ function animate() {
     // Indicar a Three.js que la textura del canvas ha cambiado
     texture.needsUpdate = true;
 
-    camera.rotation.y = mouseX * -0.4; // Controlar la inclinación horizontal
-    camera.rotation.x = mouseY * 0.4; // Controlar la inclinación vertical
+ 
+
+      // Calcular la dirección de la cámara
+      camera.getWorldDirection(direction);
+      right.crossVectors(direction, up).normalize();
+
+      // Controlar el movimiento de la cámara con las teclas
+      const moveSpeed = 0.1;
+      if (moveForward) {
+        camera.position.addScaledVector(direction, moveSpeed);
+      }
+      if (moveBackward) {
+        camera.position.addScaledVector(direction, -moveSpeed);
+      }
+      if (moveLeft) {
+        camera.position.addScaledVector(right, -moveSpeed);
+      }
+      if (moveRight) {
+        camera.position.addScaledVector(right, moveSpeed);
+      }
+
+      //Restringir el movimiento vertical de la cámara
+      if (camera.position.y < initialCameraY || camera.position.y > initialCameraY) {
+        camera.position.y = initialCameraY;
+      }
+
 
     renderer.render(scene, camera); //Render the scene
 }
