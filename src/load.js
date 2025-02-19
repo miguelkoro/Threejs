@@ -26,7 +26,7 @@ class Load{
             const progressBar = document.getElementById('progress-bar');
         
             loadingManager.onProgress = function (url, loaded, total) {
-            progressBar.value = (loaded / total) * 100;
+                progressBar.value = (loaded / total) * 100;
             };
             const progressBarContainer = document.querySelector('.progress-bar-container');
         
