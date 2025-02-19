@@ -2,7 +2,6 @@
 // npx vite
 import * as THREE from 'three';
 import Load from '/src/load.js'; 
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 
@@ -40,7 +39,7 @@ const geometry = new THREE.PlaneGeometry(1.8, 1.4);  // Un plano de tamaño 2x2
 const material = new THREE.MeshBasicMaterial({ map: texture });  // Aplicar la textura del canvas
 const plane = new THREE.Mesh(geometry, material);
 //geometry.rotateY(Math.PI);  // Rotar el plano para que se vea de frente
-plane.position.set(-0.9, 1.45, -0.23);  // Colocar el plano más cerca de la cámara o en la posición deseada
+plane.position.set(-3.5, 5.3, 0);  // Colocar el plano más cerca de la cámara o en la posición deseada
 //plane.rotation.x = -0.0815;  // Rotar el plano
 plane.rotation.x = -0.05;  // Rotar el plano
 // Añadir el plano a la escena
@@ -189,6 +188,29 @@ progressBarContainer.style.display = 'none';
 const loadjs = new Load();
 const loader = loadjs.loadingManager();
 //------------------
+const point = document.createElement('div');
+function createPointer(){
+    // Crear un elemento div para el punto
+   
+    point.style.position = 'absolute';
+    point.style.width = '4px';
+    point.style.height = '4px';
+    point.style.backgroundColor = 'white';
+    point.style.borderRadius = '50%';
+    point.style.left = '50%';
+    point.style.top = '50%';
+    point.style.transform = 'translate(-50%, -50%)';
+    hidePointer();
+    document.body.appendChild(point);
+}
+
+function showPointer(){
+    point.style.display = 'block';
+}
+function hidePointer(){
+    point.style.display = 'none';
+}
+
 
 let officeLamp_model;  
 loader.load(
@@ -201,18 +223,10 @@ loader.load(
       //scene.add(model); // Agregar el modelo a la escena
       group.add(officeLamp_model);  // Añadir el plano al grupo
 
-
-      // Crear un elemento div para el punto
-      const point = document.createElement('div');
-      point.style.position = 'absolute';
-      point.style.width = '4px';
-      point.style.height = '4px';
-      point.style.backgroundColor = 'white';
-      point.style.borderRadius = '50%';
-      point.style.left = '50%';
-      point.style.top = '50%';
-      point.style.transform = 'translate(-50%, -50%)';
-      document.body.appendChild(point);
+    createPointer();
+    showPointer();
+   
+    
   },
   undefined,
   (error) => {
@@ -228,8 +242,8 @@ loader.load(
   (gltf) => {
     test_model = gltf.scene;
     //test_model.rotation.y = 4; // Rotar el modelo
-    test_model.scale.set(9, 9, 9); // Escalar el modelo
-    test_model.position.set(-0.5, 1.2, -3.7);
+    test_model.scale.set(10, 10, 10); // Escalar el modelo
+    test_model.position.set(-3.1, 4.9, -3.6);
       //scene.add(model); // Agregar el modelo a la escena
       group.add(test_model);  // Añadir el plano al grupo
   },
@@ -264,52 +278,53 @@ var imgPcWall = createImages('resources/sprites/computer/windowswallpaperXL');
 
 //------------------
 
+function moverPersonajeHabitacion(){
+    // Calcular la dirección de la cámara
+    camera.getWorldDirection(direction);
+    right.crossVectors(direction, up).normalize();
+
+    // Controlar el movimiento de la cámara con las teclas
+    const moveSpeed = 0.2;
+    if (moveForward) {
+      camera.position.addScaledVector(direction, moveSpeed);
+    }
+    if (moveBackward) {
+      camera.position.addScaledVector(direction, -moveSpeed);
+    }
+    if (moveLeft) {
+      camera.position.addScaledVector(right, -moveSpeed);
+    }
+    if (moveRight) {
+      camera.position.addScaledVector(right, moveSpeed);
+    }
+
+    //Restringir el movimiento vertical de la cámara
+    if (camera.position.y < initialCameraY || camera.position.y > initialCameraY) {
+      camera.position.y = initialCameraY;
+    }
+}
+
 //------------------
 const initialCameraY = camera.position.y;
 
 function animate() {
-    requestAnimationFrame(animate); //Call the animate function
-    //if (model){
-      //model.rotation.y += 0.01; //Rotate the mesh
-      //group.rotation.y += 0.01; //Rotate the mesh
-      //model.rotation.y += 0.01; //Rotate the mesh
-    //}
+  requestAnimationFrame(animate); //Call the animate function
+  //if (model){
+    //model.rotation.y += 0.01; //Rotate the mesh
+    //group.rotation.y += 0.01; //Rotate the mesh
+    //model.rotation.y += 0.01; //Rotate the mesh
+  //}
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Limpiar el canvas
-    ctx.fillText('Texto actualizado en el Canvas', 50, 50);  // Dibujo dinámico en el canvas
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(imgPcWall, 0, 0);
-    // Indicar a Three.js que la textura del canvas ha cambiado
-    texture.needsUpdate = true;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);  // Limpiar el canvas
+  ctx.fillText('Texto actualizado en el Canvas', 50, 50);  // Dibujo dinámico en el canvas
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(imgPcWall, 0, 0);
+  // Indicar a Three.js que la textura del canvas ha cambiado
+  texture.needsUpdate = true;
 
- 
-
-      // Calcular la dirección de la cámara
-      camera.getWorldDirection(direction);
-      right.crossVectors(direction, up).normalize();
-
-      // Controlar el movimiento de la cámara con las teclas
-      const moveSpeed = 0.1;
-      if (moveForward) {
-        camera.position.addScaledVector(direction, moveSpeed);
-      }
-      if (moveBackward) {
-        camera.position.addScaledVector(direction, -moveSpeed);
-      }
-      if (moveLeft) {
-        camera.position.addScaledVector(right, -moveSpeed);
-      }
-      if (moveRight) {
-        camera.position.addScaledVector(right, moveSpeed);
-      }
-
-      //Restringir el movimiento vertical de la cámara
-      if (camera.position.y < initialCameraY || camera.position.y > initialCameraY) {
-        camera.position.y = initialCameraY;
-      }
-
-
-    renderer.render(scene, camera); //Render the scene
+  moverPersonajeHabitacion();
+  
+  renderer.render(scene, camera); //Render the scene
 }
 animate();
 //renderer.render(scene, camera); //Render the scene
