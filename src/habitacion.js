@@ -1,12 +1,14 @@
 import * as THREE from 'three';
-import Canvas from '/src/canvas.js'; 
+//import Canvas from '/src/canvas.js'; 
+import Ordenador from '/src/ordenador.js';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 class Habitacion{
     constructor(){
 
         //Inicializar objetos
-        this.test_model = null;
-        this.officeLamp_model = null;
+        this.computer_model = null;
+        this.room_model = null;
         this.television_model = null;
 
         //Para manejar la camara
@@ -30,6 +32,23 @@ class Habitacion{
         this.maxX = 6;
         this.minZ = -2.7;
         this.maxZ = 18;
+
+        //Para guardar los valores de la camara antes de meterme en el pc o tele
+        this.camX = 0;
+        this.camY = 0;
+        this.camZ = 0;
+        this.camRotX = 0;
+        this.camRotY = 0;
+        this.camRotZ = 0;
+
+        this.rotarCamara = true;
+        this.moverCamara = true;
+
+        this.controls = null;
+        this.camera = null;
+
+        this.centrado = false; //Para controlar cuando la camara ha hecho zoom en el pc o tele
+
     }
 
     iniciarCamara(camera){
@@ -37,44 +56,68 @@ class Habitacion{
         camera.position.y = 7; //Move the camera back
         camera.position.x = 0.5; //Move the camera back
         camera.rotation.x = -0.5; //Tilt the camera down
+
+        //this.controls = new PointerLockControls(camera, document.body);
+        this.camera=camera;
+    }
+    iniciarControls(control){
+        this.controls = control;
     }
 
     keyDownEvent(event){
-        switch (event) {
-            case 'KeyW':
-              this.moveForward = true;
-              break;
-            case 'KeyS':
-                this.moveBackward = true;
-              break;
-            case 'KeyA':
-                this.moveLeft = true;
-              break;
-            case 'KeyD':
-                this.moveRight = true;
-              break;
-          }
+        if(!this.centrado){
+            switch (event) {
+                case 'KeyW':
+                  this.moveForward = true;
+                  break;
+                case 'KeyS':
+                    this.moveBackward = true;
+                  break;
+                case 'KeyA':
+                    this.moveLeft = true;
+                  break;
+                case 'KeyD':
+                    this.moveRight = true;
+                  break;
+              }
+        }else{
+            if(event=='Space'){
+                this.controls.lock();
+                this.centrado = false;
+                //this.rotarCamara = true;
+                this.camera.position.x = this.camX;
+                this.camera.position.y = this.camY;
+                this.camera.position.z = this.camZ;
+                this.camera.rotation.x = this.camRotX;
+                this.camera.rotation.y = this.camRotY;
+                this.camera.rotation.z = this.camRotZ;
+            }
+        }
     }
 
     keyUpEvent(event){
-        switch (event) {
-            case 'KeyW':
-                this.moveForward = false;
-              break;
-            case 'KeyS':
-                this.moveBackward = false;
-              break;
-            case 'KeyA':
-                this.moveLeft = false;
-              break;
-            case 'KeyD':
-                this.moveRight = false;
-              break;
-          }
+        if(!this.centrado){
+            switch (event) {
+                case 'KeyW':
+                    this.moveForward = false;
+                break;
+                case 'KeyS':
+                    this.moveBackward = false;
+                break;
+                case 'KeyA':
+                    this.moveLeft = false;
+                break;
+                case 'KeyD':
+                    this.moveRight = false;
+                break;
+            }
+        }
     }
 
     clickEvent(controls, event){
-        controls.lock();
+        if(!this.centrado){
+            controls.lock();
+        }
     }
 
     /*mouseMoveEvent(event, window){
@@ -84,49 +127,51 @@ class Habitacion{
 
     updateControls(camera){
 
-        let initialCameraY = camera.position.y;
+        if(!this.centrado){
+            let initialCameraY = camera.position.y;
 
-        camera.getWorldDirection(this.direction);
-        this.right.crossVectors(this.direction, this.up).normalize();
-        this.moveSpeed = 0.2;
+            camera.getWorldDirection(this.direction);
+            this.right.crossVectors(this.direction, this.up).normalize();
+            this.moveSpeed = 0.2;
 
-        // Guardar la posición anterior de la cámara
-        let previousPosition = camera.position.clone();
-        // Restringir el movimiento de la cámara dentro de los límites
-        
-        if (this.moveForward) {
-            camera.position.addScaledVector(this.direction, this.moveSpeed);
-        }
-        if (this.moveBackward) {
-            camera.position.addScaledVector(this.direction, -this.moveSpeed);
-        }
-        if (this.moveLeft) {
-            camera.position.addScaledVector(this.right, -this.moveSpeed);
-        }
-        if (this.moveRight) {
-            camera.position.addScaledVector(this.right, this.moveSpeed);
-        }
+            // Guardar la posición anterior de la cámara
+            let previousPosition = camera.position.clone();
+            // Restringir el movimiento de la cámara dentro de los límites
             
-        // Restringir el movimiento de la cámara dentro de los límites
-        if (camera.position.x < this.minX || camera.position.x > this.maxX || camera.position.z < this.minZ || camera.position.z > this.maxZ) {
-            camera.position.copy(previousPosition); // Revertir a la posición anterior si se exceden los límites
-        }
+            if (this.moveForward) {
+                camera.position.addScaledVector(this.direction, this.moveSpeed);
+            }
+            if (this.moveBackward) {
+                camera.position.addScaledVector(this.direction, -this.moveSpeed);
+            }
+            if (this.moveLeft) {
+                camera.position.addScaledVector(this.right, -this.moveSpeed);
+            }
+            if (this.moveRight) {
+                camera.position.addScaledVector(this.right, this.moveSpeed);
+            }
+                
+            // Restringir el movimiento de la cámara dentro de los límites
+            if (camera.position.x < this.minX || camera.position.x > this.maxX || camera.position.z < this.minZ || camera.position.z > this.maxZ) {
+                camera.position.copy(previousPosition); // Revertir a la posición anterior si se exceden los límites
+            }
 
-        //Restringir el movimiento vertical de la cámara
-        camera.position.y = initialCameraY;        
+            //Restringir el movimiento vertical de la cámara
+            camera.position.y = initialCameraY;        
+        }
     }
 
     loadModels(loader, scene){
         // Crear el grupo que contendrá el plano y el modelo
         this.group = new THREE.Group();       
 
-        this.officeLamp_model;  
+        this.room_model;  
         loader.load(
         'resources/Habitacion/ThreejsBlend2.gltf',
         (gltf) => {
-            this.officeLamp_model = gltf.scene;
-            this.officeLamp_model.scale.set(10, 10, 10); // Escalar el modelo
-            this.group.add(this.officeLamp_model);  // Añadir el plano al grupo
+            this.room_model = gltf.scene;
+            this.room_model.scale.set(10, 10, 10); // Escalar el modelo
+            this.group.add(this.room_model);  // Añadir el plano al grupo
         },
         undefined,
         (error) => {
@@ -134,16 +179,16 @@ class Habitacion{
         }
         );
 
-        this.test_model;  
+        this.computer_model;  
         loader.load(
         'resources/scene-v1/scene.gltf',
         (gltf) => {
-            this.test_model = gltf.scene;
+            this.computer_model = gltf.scene;
             //test_model.rotation.y = 4; // Rotar el modelo
-            this.test_model.scale.set(10, 10, 10); // Escalar el modelo
-            this.test_model.position.set(-3.1, 4.9, -3.6);
+            this.computer_model.scale.set(10.5, 10.5, 10.5); // Escalar el modelo
+            this.computer_model.position.set(-2.9, 5, -4);
             //scene.add(model); // Agregar el modelo a la escena
-            this.group.add(this.test_model);  // Añadir el plano al grupo
+            this.group.add(this.computer_model);  // Añadir el plano al grupo
         },
         undefined,
         (error) => {
@@ -158,7 +203,7 @@ class Habitacion{
             this.television_model = gltf.scene;
             this.television_model.rotation.y = Math.PI;
             this.television_model.scale.set(1.8, 1.8, 1.8); // Escalar el modelo
-            this.television_model.position.set(6, 5, 5);
+            this.television_model.position.set(9, 4, 7.7);
             //scene.add(this.television_model); // Agregar el modelo a la escena
             this.group.add(this.television_model);  // Añadir el plano al grupo
         },
@@ -172,22 +217,13 @@ class Habitacion{
 
 
         this.lights(scene);
-        this.computerCanvas();
+        this.computerCanvas(loader);
     }
 
-    computerCanvas(){
-        this.canvasComputer = new Canvas(1225, 672);
-        this.ctxComputer = this.canvasComputer.getCanvas();
-        this.planeComputer = this.canvasComputer.crearPlano(1.8, 1.4);
-        this.planeComputer.position.set(-3.5, 5.3, 0);  // Colocar el plano más cerca de la cámara o en la posición deseada
-        //planeComputer.rotation.x = -0.05;  // Rotar el plano
-        this.group.add(this.planeComputer);  // Añadir el plano al grupo
-
-        this.ctxComputer.fillStyle = 'white';
-        this.ctxComputer.fill();
-        this.ctxComputer.fillRect(0, 0, this.canvasComputer.width, this.canvasComputer.height);
-        this.ctxComputer.font = '30px Arial';
-        this.ctxComputer.fillText('Contenido del Canvas', 50, 50);
+    computerCanvas(loader){
+        this.ordenador = new Ordenador();
+        this.ordenador.loadImages(loader);
+        this.group.add(this.ordenador.getPlane());
     }
 
     lights(scene){
@@ -209,36 +245,83 @@ class Habitacion{
     }
 
     animate(){
-        this.canvasComputer.update();
-        this.ctxComputer.clearRect(0, 0, this.canvasComputer.width, this.canvasComputer.height);  // Limpiar el canvas
-        this.ctxComputer.fillText('Texto actualizado en el Canvas', 50, 50);  // Dibujo dinámico en el canvas
-        this.ctxComputer.fillRect(0, 0, this.canvasComputer.width, this.canvasComputer.height);
+        this.ordenador.animate();
+    }
+
+    saveCamarasPosition(camera){
+        this.camX = camera.position.x;
+        this.camY = camera.position.y;
+        this.camZ = camera.position.z;
+        this.camRotX = camera.rotation.x;
+        this.camRotY = camera.rotation.y;
+        this.camRotZ = camera.rotation.z;
     }
 
     onClickRaycaster(camera){
-        // Establecer el rayo desde la cámara y la posición del ratón
-        this.raycaster = new THREE.Raycaster();
-        this.raycaster.setFromCamera(this.mouse, camera);
+        if(!this.centrado){
+            // Establecer el rayo desde la cámara y la posición del ratón
+            this.raycaster = new THREE.Raycaster();
+            this.mouse.set(0,0)
+            this.raycaster.setFromCamera(this.mouse, camera);
 
-        if(this.test_model == null){
-            this.intersects = this.raycaster.intersectObject(this.test_model, true);
+            if(this.computer_model != null){
+                this.intersects = this.raycaster.intersectObject(this.computer_model, true);
 
-            if (this.intersects.length > 0) {
-                // Hacer zoom hacia el objeto
-                /*this.targetPosition = this.intersects[0].point;
-                camera.position.lerp(this.targetPosition, 0.1);*/
-                console.log("Modelo");
+                if (this.intersects.length > 0) {
+                    // Hacer zoom hacia el objeto
+                    /*this.targetPosition = this.intersects[0].point;
+                    camera.position.lerp(this.targetPosition, 0.1);*/
+                    console.log("PC");
+                    this.saveCamarasPosition(camera);
+                    camera.position.x = -2.9;
+                    camera.position.y = 5.5;
+                    camera.position.z = 1.2;
+                    //camera.rotation.x = -0.5;
+                    camera.lookAt(this.computer_model.position); // Hacer que la cámara mire hacia el objeto
+                    //camera.rotation.y = -0.5;
+                    //this.moverCamara = false;
+                    this.centrado = true;
+
+                    this.hidePointer();
+                    this.controls.unlock();
+                    //camera.rotation.x = 0;
+                    
+                }
             }
+
+            if(this.television_model != null){
+                this.television_intersects = this.raycaster.intersectObject(this.television_model, true);
+
+                if (this.television_intersects.length > 0) {
+                    // Hacer zoom hacia el objeto
+                    /*this.targetPosition = this.intersects[0].point;
+                    camera.position.lerp(this.targetPosition, 0.1);*/
+                    console.log("TV");
+                }
+            }
+            // Calcular las intersecciones
+        
+
+            /*this.intersects2 = this.raycaster.intersectObject(this.officeLamp_model, true);
+
+            if (this.intersects2.length > 0) {
+                // Hacer zoom hacia el objeto
+                console.log("Lampara");
+            }*/
         }
-        // Calcular las intersecciones
-       
-
-        /*this.intersects2 = this.raycaster.intersectObject(this.officeLamp_model, true);
-
-        if (this.intersects2.length > 0) {
-            // Hacer zoom hacia el objeto
-            console.log("Lampara");
-        }*/
+    }
+    showPointer() {
+        const point = document.getElementById("center-point");
+        if (point) {
+            point.style.display = 'block';
+        }
+    }
+    
+    hidePointer() {
+        const point = document.getElementById("center-point");
+        if (point) {
+            point.style.display = 'none';
+        }
     }
     
 }

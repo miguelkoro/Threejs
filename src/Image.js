@@ -38,9 +38,6 @@ class Border{
 
 class ImageDraw extends Border{ 
     constructor(position, width, height, image='', column=0,row=0, velocity={x:0,y:0}, maxframes=0, maxtimecounter=0, opacity=1){
-        //this.position={x:sizeConverter(position.x), y:position.y*screenSize.multiplier}
-        //this.width=width*screenSize.multiplier
-        //this.height=height*screenSize.multiplier
         super(position, width, height)
         this.image=image
 
@@ -191,3 +188,4 @@ class ImageDraw extends Border{
     }
 
 }
+export default ImageDraw;

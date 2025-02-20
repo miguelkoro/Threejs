@@ -33,19 +33,22 @@ window.addEventListener('keyup', (event) => {
 });
 
 const controls = new PointerLockControls(camera, document.body);
+habitacion.iniciarControls(controls);
 
 document.addEventListener('click', () => {
-  controls.lock();
+  if (!habitacion.centrado) {
+    habitacion.controls.lock();
+  }
 });
 
 controls.addEventListener('lock', () => {
   console.log('Pointer locked');
-  showPointer();
+  habitacion.showPointer();
 });
 
 controls.addEventListener('unlock', () => {
   console.log('Pointer unlocked');
-  hidePointer();
+  habitacion.hidePointer();
 });
 
 
@@ -54,8 +57,8 @@ window.addEventListener('mousemove', (event) => {
 });
 
 
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+//const raycaster = new THREE.Raycaster();
+//const mouse = new THREE.Vector2();
 
 document.addEventListener('click', (event) => { 
   habitacion.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -81,13 +84,6 @@ function hidePointer(){
 
 habitacion.loadModels(loader, scene);  // Cargar los modelos
 
-
-/*function createImages(imagesrc){
-  var image=new Image()
-  image.src=imagesrc+'.png'
-  return image;
-}
-var imgPcWall = createImages('resources/sprites/computer/windowswallpaperXL');*/
 
 //------------------
 
