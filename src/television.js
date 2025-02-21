@@ -5,8 +5,8 @@ class television{
     constructor(){
         this.canvasTelevision = new Canvas(1225, 672);
         this.ctxTelevision = this.canvasTelevision.getCanvas();
-        this.planeTelevision = this.canvasTelevision.crearPlano(2.8, 2.1);
-        this.planeTelevision.position.set(7.85, 3.9, 6.9);  // Colocar el plano más cerca de la cámara o en la posición deseada
+        this.planeTelevision = this.canvasTelevision.crearPlano(2.58, 1.95);
+        this.planeTelevision.position.set(7.9, 4, 7.3);  // Colocar el plano más cerca de la cámara o en la posición deseada
         this.planeTelevision.rotation.y =  -Math.PI/2;  // Rotar el plano
         //this.group.add(this.planeComputer);  // Añadir el plano al grupo
 
@@ -21,11 +21,15 @@ class television{
         this.canvasTelevision.update();
         this.ctxTelevision.clearRect(0, 0, this.canvasTelevision.width, this.canvasTelevision.height);  // Limpiar el canvas
 
+        this.ctxTelevision.drawImage(this.fondoImg, 0, 0);
+
         //this.ctxComputer.fillText('Texto actualizado en el Canvas', 50, 50);  // Dibujo dinámico en el canvas
-        //this.ctxComputer.fillRect(0, 0, this.canvasComputer.width, this.canvasComputer.height);
+        this.ctxTelevision.fillStyle='black';
+        this.ctxTelevision.fill();
+        this.ctxTelevision.fillRect(0, 50, this.canvasTelevision.width, 50);
 
         //if (this.fondoImg.complete) {
-        this.ctxTelevision.drawImage(this.fondoImg, 0, 0);
+        
         //}
     }
 

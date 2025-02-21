@@ -55,7 +55,7 @@ class Habitacion{
 
     iniciarCamara(camera){
         camera.position.z = 6; //Move the camera back
-        camera.position.y = 7; //Move the camera back
+        camera.position.y = 5; //Move the camera back 7
         camera.position.x = 0.5; //Move the camera back
         camera.rotation.x = -0.5; //Tilt the camera down
 
@@ -263,13 +263,13 @@ class Habitacion{
         //directionalLight.rotateX(Math.PI / 2);
         scene.add(directionalLight);
 
-        /*const width = 2;
+        const width = 2;
         const height = 1;
         const intensity = 1;
         const rectLight = new THREE.RectAreaLight( 0xffffff, intensity,  width, height );
-        rectLight.position.set( -1, 2.5, 1 );
+        rectLight.position.set( 8, 4, 7 );
         rectLight.lookAt( 0, 0, 0 );
-        scene.add( rectLight )*/
+        scene.add( rectLight );
     }
 
     animate(){
@@ -334,7 +334,7 @@ class Habitacion{
                     //
                     camera.lookAt(this.television_model.position); // Hacer que la cámara mire hacia el objeto
                     camera.rotation.y = -Math.PI/2;
-                    camera.position.z = 7.3;
+                    camera.position.z = 7.4;
                     //camera.rotation.y = -0.5;
                     //this.moverCamara = false;
                     this.centrado = true;

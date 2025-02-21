@@ -12,14 +12,17 @@ class Canvas{
     crearTextura(){
         this.texture = new THREE.CanvasTexture(this.canvas);  // Usamos el canvas como textura
         this.texture.minFilter = THREE.LinearFilter;  // Asegurarse de que la textura se vea bien al hacer zoom
+        this.texture.magFilter = THREE.LinearFilter;  // Asegurarse de que la textura se vea bien al hacer zoom
+        this.texture.colorSpace = THREE.SRGBColorSpace
+        this.texture.format = THREE.RGBAFormat;  
     }
 
     crearPlano(width, height){
-        // Crear un plano y aplicarle la textura
-        this.geometry = new THREE.PlaneGeometry(width, height);  // Un plano de tamaño 2x2
-        this.material = new THREE.MeshBasicMaterial({ map: this.texture });  // Aplicar la textura del canvas
-        this.plane = new THREE.Mesh(this.geometry, this.material);
-        return this.plane;
+       // Crear un plano y aplicarle la textura
+       this.geometry = new THREE.PlaneGeometry(width, height);  // Un plano de tamaño 2x2
+       this.material = new THREE.MeshBasicMaterial({ map: this.texture, toneMapped: false });  // Aplicar la textura del canvas
+       this.plane = new THREE.Mesh(this.geometry, this.material);
+       return this.plane;
     }
 
     getCanvas(){
