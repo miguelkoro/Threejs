@@ -26,6 +26,9 @@ class ordenador{
 
         //if (this.fondoImg.complete) {
         this.ctxComputer.drawImage(this.fondoImg, 0, 0);
+        this.ctxComputer.fillStyle = 'red';
+        this.ctxComputer.fill();
+        this.ctxComputer.fillRect(0, 5, this.canvasComputer.width, 5);
         //}
     }
 

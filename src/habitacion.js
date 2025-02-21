@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 //import Canvas from '/src/canvas.js'; 
 import Ordenador from '/src/ordenador.js';
+import Television from '/src/television.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 
 class Habitacion{
@@ -10,6 +11,7 @@ class Habitacion{
         this.computer_model = null;
         this.room_model = null;
         this.television_model = null;
+        this.postit_model = null;
 
         //Para manejar la camara
         this.direction = new THREE.Vector3();
@@ -152,9 +154,9 @@ class Habitacion{
             }
                 
             // Restringir el movimiento de la cámara dentro de los límites
-            if (camera.position.x < this.minX || camera.position.x > this.maxX || camera.position.z < this.minZ || camera.position.z > this.maxZ) {
+            /*if (camera.position.x < this.minX || camera.position.x > this.maxX || camera.position.z < this.minZ || camera.position.z > this.maxZ) {
                 camera.position.copy(previousPosition); // Revertir a la posición anterior si se exceden los límites
-            }
+            }*/
 
             //Restringir el movimiento vertical de la cámara
             camera.position.y = initialCameraY;        
@@ -212,18 +214,44 @@ class Habitacion{
             console.error('Error al cargar el modelo:', error);
         }
         );
+
+        this.postit_model;  
+        loader.load(
+        'resources/postit/postit.gltf',
+        (gltf) => {
+            this.postit_model = gltf.scene;          
+            this.postit_model.rotation.y = -Math.PI/2;
+            
+
+            this.postit_model.scale.set(0.5, 0.5, 0.5); // Escalar el modelo
+            this.postit_model.position.set(6.5, 8, -3.2);
+            //scene.add(this.television_model); // Agregar el modelo a la escena
+            this.group.add(this.postit_model);  // Añadir el plano al grupo
+        },
+        undefined,
+        (error) => {
+            console.error('Error al cargar el modelo:', error);
+        }
+        );
         
         scene.add(this.group);  // Añadir el grupo a la escena
 
 
         this.lights(scene);
         this.computerCanvas(loader);
+        this.televisionCanvas(loader);
     }
 
     computerCanvas(loader){
         this.ordenador = new Ordenador();
         this.ordenador.loadImages(loader);
         this.group.add(this.ordenador.getPlane());
+    }
+
+    televisionCanvas(loader){
+        this.television = new Television();
+        this.television.loadImages(loader);
+        this.group.add(this.television.getPlane());
     }
 
     lights(scene){
@@ -246,6 +274,7 @@ class Habitacion{
 
     animate(){
         this.ordenador.animate();
+        this.television.animate();
     }
 
     saveCamarasPosition(camera){
@@ -278,6 +307,7 @@ class Habitacion{
                     camera.position.z = 1.2;
                     //camera.rotation.x = -0.5;
                     camera.lookAt(this.computer_model.position); // Hacer que la cámara mire hacia el objeto
+                    camera.position.x = -3.2;
                     //camera.rotation.y = -0.5;
                     //this.moverCamara = false;
                     this.centrado = true;
@@ -297,6 +327,20 @@ class Habitacion{
                     /*this.targetPosition = this.intersects[0].point;
                     camera.position.lerp(this.targetPosition, 0.1);*/
                     console.log("TV");
+                    this.saveCamarasPosition(camera);
+                    camera.position.x = 6.5;
+                    camera.position.y = 4;
+                    camera.position.z = 7;
+                    //
+                    camera.lookAt(this.television_model.position); // Hacer que la cámara mire hacia el objeto
+                    camera.rotation.y = -Math.PI/2;
+                    camera.position.z = 7.3;
+                    //camera.rotation.y = -0.5;
+                    //this.moverCamara = false;
+                    this.centrado = true;
+
+                    this.hidePointer();
+                    this.controls.unlock();
                 }
             }
             // Calcular las intersecciones
