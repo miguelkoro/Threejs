@@ -15,8 +15,19 @@ document.body.appendChild(renderer.domElement); //Add the renderer to the body; 
 
 const loadjs = new Load();
 const loader = loadjs.loadingManager();
+let cargaRealizada = false;
 
 
+window.continueLoading = function() {
+  document.querySelector('.progress-bar-container').style.display = 'none';
+  document.getElementById('titulo').style.display = 'none';
+  document.getElementById('continue-button').style.display = 'none';
+  // Aquí puedes agregar el código para mostrar el contenido de la página
+  //const titulo = document.getElementById('titulo');
+  cargaRealizada = true;
+  controls.lock();
+
+}
 //------------------
 
 const habitacion = new Habitacion();
@@ -36,7 +47,7 @@ const controls = new PointerLockControls(camera, document.body);
 habitacion.iniciarControls(controls);
 
 document.addEventListener('click', () => {
-  if (!habitacion.centrado) {
+  if (!habitacion.centrado && cargaRealizada) {
     habitacion.controls.lock();
   }
 });
@@ -53,7 +64,7 @@ controls.addEventListener('unlock', () => {
 
 
 window.addEventListener('mousemove', (event) => {
-  //habitacion.mouseMoveEvent(event, window);
+  habitacion.mouseMoveEvent(camera);
 });
 
 
@@ -72,12 +83,12 @@ document.addEventListener('click', (event) => {
 const point = document.getElementById("center-point");//document.createElement('div');
 
 
-function showPointer(){  
+/*function showPointer(){  
     point.style.display = 'block';  
 }
 function hidePointer(){
     point.style.display = 'none';
-}
+}*/
 
 //------------------
 

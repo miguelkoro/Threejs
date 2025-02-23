@@ -24,14 +24,21 @@ class Load{
             };
         
             const progressBar = document.getElementById('progress-bar');
+            const continueButton = document.getElementById('continue-button');
         
             loadingManager.onProgress = function (url, loaded, total) {
                 progressBar.value = (loaded / total) * 100;
             };
             const progressBarContainer = document.querySelector('.progress-bar-container');
+            const label = document.querySelector('label[for="progress-bar"]');
+           
         
             loadingManager.onLoad = function () {
-            progressBarContainer.style.display = 'none';
+                //progressBarContainer.style.display = 'none';
+                label.style.display = 'none';
+                progressBar.style.display = 'none';
+                continueButton.style.display = 'block';
+
             };
             return loader;
     }

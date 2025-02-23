@@ -2,7 +2,6 @@ import * as THREE from 'three';
 //import Canvas from '/src/canvas.js'; 
 import Ordenador from '/src/ordenador.js';
 import Television from '/src/television.js';
-import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
@@ -32,9 +31,9 @@ class Habitacion{
         this.moveSpeed = 0.2;
 
         //Limites de la habitacion
-        this.minX = -7;
-        this.maxX = 6;
-        this.minZ = -2.7;
+        this.minX = -8;
+        this.maxX = 9;
+        this.minZ = 2;
         this.maxZ = 18;
 
         //Para guardar los valores de la camara antes de meterme en el pc o tele
@@ -52,6 +51,9 @@ class Habitacion{
         this.camera = null;
 
         this.centrado = false; //Para controlar cuando la camara ha hecho zoom en el pc o tele
+
+        this.salirMensaje = document.getElementById('salir');
+        this.pointer = document.getElementById('center-point');
 
     }
 
@@ -95,6 +97,8 @@ class Habitacion{
                 this.camera.rotation.x = this.camRotX;
                 this.camera.rotation.y = this.camRotY;
                 this.camera.rotation.z = this.camRotZ;
+
+                this.salirMensaje.style.display = 'none';
             }
         }
     }
@@ -124,10 +128,29 @@ class Habitacion{
         }
     }
 
-    /*mouseMoveEvent(event, window){
-        this.mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-        this.mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-    }*/
+    mouseMoveEvent(camera){
+        if(!this.centrado){
+            // Establecer el rayo desde la cámara y la posición del ratón
+            this.raycaster = new THREE.Raycaster();
+            this.mouse.set(0,0)
+            this.raycaster.setFromCamera(this.mouse, camera);
+
+            if(this.computer_model != null && this.television_model != null){
+                this.intersects = this.raycaster.intersectObject(this.computer_model, true);
+                this.television_intersects = this.raycaster.intersectObject(this.television_model, true);
+
+                if (this.intersects.length > 0) {
+                    //console.log("PC"); 
+                    this.pointer.style.backgroundColor = 'green';      
+                }else if(this.television_intersects.length > 0){
+                    //console.log("TV");
+                    this.pointer.style.backgroundColor = 'green';
+                }else{
+                    this.pointer.style.backgroundColor = 'white';
+                }
+            }
+        }
+    }
 
     updateControls(camera){
 
@@ -156,9 +179,9 @@ class Habitacion{
             }
                 
             // Restringir el movimiento de la cámara dentro de los límites
-            /*if (camera.position.x < this.minX || camera.position.x > this.maxX || camera.position.z < this.minZ || camera.position.z > this.maxZ) {
+            if (camera.position.x < this.minX || camera.position.x > this.maxX || camera.position.z < this.minZ || camera.position.z > this.maxZ) {
                 camera.position.copy(previousPosition); // Revertir a la posición anterior si se exceden los límites
-            }*/
+            }
 
             //Restringir el movimiento vertical de la cámara
             camera.position.y = initialCameraY;        
@@ -326,9 +349,9 @@ class Habitacion{
         this.floorLamp_light2.position.set(-9, 3.5, -1.74);
         scene.add(this.floorLamp_light2);*/
 
-        this.companyCube_light = new THREE.PointLight(0xFC66FF, 0.5, 0, 2);
+        /*this.companyCube_light = new THREE.PointLight(0xFC66FF, 0.5, 0, 2);
         this.companyCube_light.position.set(10, 9.65, 8.81);
-        scene.add(this.companyCube_light);
+        scene.add(this.companyCube_light);*/
     
     }
 
@@ -363,7 +386,7 @@ class Habitacion{
                     console.log("PC");
                     this.saveCamarasPosition(camera);
                     camera.position.x = -2.9;
-                    camera.position.y = 5.5;
+                    camera.position.y = 5.45;
                     camera.position.z = 1.2;
                     //camera.rotation.x = -0.5;
                     camera.lookAt(this.computer_model.position); // Hacer que la cámara mire hacia el objeto
@@ -374,6 +397,8 @@ class Habitacion{
 
                     this.hidePointer();
                     this.controls.unlock();
+
+                    this.salirMensaje.style.display = 'block';
                     //camera.rotation.x = 0;
                     
                 }
@@ -389,7 +414,7 @@ class Habitacion{
                     console.log("TV");
                     this.saveCamarasPosition(camera);
                     camera.position.x = 6.5;
-                    camera.position.y = 4;
+                    camera.position.y = 3.95;
                     camera.position.z = 7;
                     //
                     camera.lookAt(this.television_model.position); // Hacer que la cámara mire hacia el objeto
@@ -401,6 +426,8 @@ class Habitacion{
 
                     this.hidePointer();
                     this.controls.unlock();
+
+                    this.salirMensaje.style.display = 'block';
                 }
             }
             // Calcular las intersecciones

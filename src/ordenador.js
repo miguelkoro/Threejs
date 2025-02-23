@@ -30,8 +30,21 @@ class ordenador{
         //if (this.fondoImg.complete) {
         
         this.ctxComputer.drawImage(this.fondoImg, 0, 0);
+        /*this.ctxComputer.drawImage(this.barraComputer, 
+            0, 0, //Coordenadas de recorte iniciales
+            this.barraComputer.width, this.barraComputer.height/2,  //Coordenadas de recorte finales
+            0, this.canvasComputer.height-this.canvasComputer.height/2,  //Posicion de la imagen en la pantalla
+            this.barraComputer.width, this.barraComputer.height/2);     //Tamaño de la imagen*/
+        this.ctxComputer.drawImage(this.barraComputer, 
+            0, 0, //Coordenadas de recorte iniciales
+            this.barraComputer.width, this.barraComputer.height/2,  //Coordenadas de recorte finales
+            0, this.ctxComputer.height-this.barraComputer.height/2,  //Posicion de la imagen en la pantalla
+            this.barraComputer.width, this.barraComputer.height/2);     //Tamaño de la imagen*/
         this.ctxComputer.fillStyle = 'white';
-        this.ctxComputer.fillRect(0, 0, this.canvasComputer.width, this.canvasComputer.height);
+        /*this.ctxComputer.fillRect(0, 0, 
+            this.barraComputer.width, this.barraComputer.height/2,
+            0, this.canvasComputer.height, 
+            this.barraComputer.width, this.barraComputer.height/2);*/
         //this.ctxComputer.fill();
         //this.ctxComputer.fillRect(0, 0, this.canvasComputer.width, this.canvasComputer.height);
         //this.canvasComputer.update();
@@ -54,6 +67,8 @@ class ordenador{
         this.fondoImg = new Image();
                // Load an image of intrinsic size 300x227 in CSS pixels
         this.fondoImg.src = "resources/sprites/computer/windowswallpaperY.png";
+        this.barraComputer = new Image();
+        this.barraComputer.src = "resources/sprites/computer/barraPC.png";
 
         //const aspectRatio = this.fondoImg.width / this.fondoImg.height;
 
