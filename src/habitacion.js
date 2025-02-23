@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import Ordenador from '/src/ordenador.js';
 import Television from '/src/television.js';
 import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
 class Habitacion{
     constructor(){
@@ -55,7 +57,7 @@ class Habitacion{
 
     iniciarCamara(camera){
         camera.position.z = 6; //Move the camera back
-        camera.position.y = 5; //Move the camera back 7
+        camera.position.y = 7; //Move the camera back 7
         camera.position.x = 0.5; //Move the camera back
         camera.rotation.x = -0.5; //Tilt the camera down
 
@@ -240,6 +242,26 @@ class Habitacion{
         this.lights(scene);
         this.computerCanvas(loader);
         this.televisionCanvas(loader);
+        this.addTextToObject(scene, 'Texto sobre el objeto', { x: 1, y: 2, z: 3 });
+    }
+
+    addTextToObject(scene, text, position) {
+        const loader = new FontLoader();
+        loader.load('resources/fonts/Neon.json', (font) => {
+            const geometry = new TextGeometry(text, {
+                font: font,
+                size: 0.5,
+                height: 0.1,
+                curveSegments: 12,
+                bevelEnabled: false,
+            });
+
+            const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const textMesh = new THREE.Mesh(geometry, material);
+
+            textMesh.position.set(position.x, position.y, position.z);
+            scene.add(textMesh);
+        });
     }
 
     computerCanvas(loader){
@@ -255,21 +277,59 @@ class Habitacion{
     }
 
     lights(scene){
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
+        //const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        this.ambientLight = new THREE.AmbientLight(0x4E63CA, 0.3);
+        scene.add(this.ambientLight);
+        //scene.add(ambientLight);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        directionalLight.position.set(0, 5, 0);
-        //directionalLight.rotateX(Math.PI / 2);
-        scene.add(directionalLight);
+        this.lava_light = new THREE.PointLight(0xDE5D5D, 1.5, 10);
+        this.lava_light.position.set(9.2, 3.8, 2.8);
+        scene.add(this.lava_light);
 
-        const width = 2;
-        const height = 1;
-        const intensity = 1;
-        const rectLight = new THREE.RectAreaLight( 0xffffff, intensity,  width, height );
-        rectLight.position.set( 8, 4, 7 );
-        rectLight.lookAt( 0, 0, 0 );
-        scene.add( rectLight );
+        this.computer_light = new THREE.PointLight(0x52B4FF, 2.5, 10);
+        this.computer_light.position.set(-3.3, 5.5, -0.1);
+        scene.add(this.computer_light);
+
+        this.lamp_light = new THREE.PointLight(0xf3FEBE, 1.2, 3.5,2.2);
+        this.lamp_light.position.set(0.678, 5.186, -0.687);
+        scene.add(this.lamp_light);
+
+        this.bedLamp_light = new THREE.PointLight(0xf3FEBE, 2.5, 2.5, 2.8);
+        this.bedLamp_light.position.set(9.1, 3.7, 17.6);
+        scene.add(this.bedLamp_light);
+
+        this.ceilingLamp_light = new THREE.PointLight(0xF8FECD, 2, 0, 1.8);
+        this.ceilingLamp_light.position.set(0, 13.75, 13.1);
+        scene.add(this.ceilingLamp_light);
+
+        this.ceilingLamp_light2 = new THREE.DirectionalLight(0xF8FECD, 0.1);
+        this.ceilingLamp_light2.position.set(0, 13.75, 13.1);
+        scene.add(this.ceilingLamp_light2);
+
+        this.television_light = new THREE.PointLight(0x75FFFD, 2.5, 10);
+        this.television_light.position.set(8, 4, 7.34);
+        scene.add(this.television_light);
+
+        this.despertador_light = new THREE.PointLight(0xFF5252, 0.22, 0, 1.5);
+        this.despertador_light.position.set(8.27, 2.38, 16.621);
+        scene.add(this.despertador_light);
+
+        this.floorLamp_light0 = new THREE.PointLight(0xFEFA90, 1.5, 0, 2);
+        this.floorLamp_light0.position.set(-8.94, 9.27, -1);
+        scene.add(this.floorLamp_light0);
+
+        this.floorLamp_light1 = new THREE.PointLight(0xFEFA90, 1.5, 0, 2);
+        this.floorLamp_light1.position.set(-10.7, 6.46, -0.74);
+        scene.add(this.floorLamp_light1);
+
+        /*this.floorLamp_light2 = new THREE.PointLight(0xFEFA90, 1.5, 0, 2);
+        this.floorLamp_light2.position.set(-9, 3.5, -1.74);
+        scene.add(this.floorLamp_light2);*/
+
+        this.companyCube_light = new THREE.PointLight(0xFC66FF, 0.5, 0, 2);
+        this.companyCube_light.position.set(10, 9.65, 8.81);
+        scene.add(this.companyCube_light);
+    
     }
 
     animate(){

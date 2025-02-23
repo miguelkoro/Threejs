@@ -1,8 +1,8 @@
 body {
   margin: 0;
   background: rgb(0,0,0);
-  background: rgb(30,61,214);
-  background: radial-gradient(circle, rgba(30,61,214,1) 0%, rgba(189,17,52,1) 100%);
+ /* background: rgb(30,61,214);
+  background: radial-gradient(circle, rgba(30,61,214,1) 0%, rgba(189,17,52,1) 100%);*/
 }
 .progress-bar-container {
   position: absolute;
@@ -12,8 +12,8 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.918);
-  background: rgb(30,61,214);
-  background: radial-gradient(circle, rgba(30,61,214,1) 0%, rgba(189,17,52,1) 100%);
+  /*background: rgb(30,61,214);
+  background: radial-gradient(circle, rgba(30,61,214,1) 0%, rgba(189,17,52,1) 100%);*/
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -6,15 +6,17 @@ class Canvas{
         this.ctx = this.canvas.getContext('2d');
         this.canvas.width = width;  // Tamaño del canvas
         this.canvas.height = height;  // Tamaño del canvas
+        this.ctx.width = width;  // Tamaño del canvas
+        this.ctx.height = height;  // Tamaño del canvas
         this.crearTextura();
     }
 
     crearTextura(){
         this.texture = new THREE.CanvasTexture(this.canvas);  // Usamos el canvas como textura
         this.texture.minFilter = THREE.LinearFilter;  // Asegurarse de que la textura se vea bien al hacer zoom
-        this.texture.magFilter = THREE.LinearFilter;  // Asegurarse de que la textura se vea bien al hacer zoom
+        //this.texture.magFilter = THREE.LinearFilter;  // Asegurarse de que la textura se vea bien al hacer zoom
         this.texture.colorSpace = THREE.SRGBColorSpace
-        this.texture.format = THREE.RGBAFormat;  
+        //this.texture.format = THREE.RGBAFormat;  
     }
 
     crearPlano(width, height){
