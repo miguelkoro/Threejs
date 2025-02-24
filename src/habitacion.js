@@ -13,6 +13,9 @@ class Habitacion{
         this.room_model = null;
         this.television_model = null;
         this.postit_model = null;
+        this.diplomas_mesh = null;
+        this.lightSwitch_model = null;
+        this.board_model = null;
 
         //Para manejar la camara
         this.direction = new THREE.Vector3();
@@ -54,6 +57,12 @@ class Habitacion{
 
         this.salirMensaje = document.getElementById('salir');
         this.pointer = document.getElementById('center-point');
+
+        this.deNoche = false;
+        this.ambientLight = null;
+        this.interruptorDia_light = null;
+        this.interruptorNoche_light = null;
+
 
     }
 
@@ -135,15 +144,29 @@ class Habitacion{
             this.mouse.set(0,0)
             this.raycaster.setFromCamera(this.mouse, camera);
 
-            if(this.computer_model != null && this.television_model != null){
+            if(this.computer_model != null && 
+                this.television_model != null &&
+                this.diplomas_mesh != null &&
+                this.board_model != null &&
+                this.lightSwitch_model != null){
                 this.intersects = this.raycaster.intersectObject(this.computer_model, true);
                 this.television_intersects = this.raycaster.intersectObject(this.television_model, true);
+                this.diplomas_mesh_intersects = this.raycaster.intersectObject(this.diplomas_mesh, true);
+                this.board_model_intersects = this.raycaster.intersectObject(this.board_model, true);
+                this.lightSwitch_model_intersects = this.raycaster.intersectObject(this.lightSwitch_model, true);
 
                 if (this.intersects.length > 0) {
                     //console.log("PC"); 
                     this.pointer.style.backgroundColor = 'green';      
                 }else if(this.television_intersects.length > 0){
                     //console.log("TV");
+                    this.pointer.style.backgroundColor = 'green';
+                }else if(this.diplomas_mesh_intersects.length > 0){
+                    //console.log("Diplomas");
+                    this.pointer.style.backgroundColor = 'green';
+                }else if(this.board_model_intersects.length > 0){
+                    this.pointer.style.backgroundColor = 'green';
+                }else if(this.lightSwitch_model_intersects.length > 0){
                     this.pointer.style.backgroundColor = 'green';
                 }else{
                     this.pointer.style.backgroundColor = 'white';
@@ -258,14 +281,60 @@ class Habitacion{
             console.error('Error al cargar el modelo:', error);
         }
         );
+
+        this.board_model;  
+        loader.load(
+        'resources/board/scene.gltf',
+        (gltf) => {
+            this.board_model = gltf.scene;          
+            this.board_model.rotation.x = Math.PI/2;
+            
+            this.board_model.scale.set(67, 67, 67); // Escalar el modelo
+            this.board_model.position.set(4.7, 8.3, -3.44);
+            //scene.add(this.television_model); // Agregar el modelo a la escena
+            this.group.add(this.board_model);  // Añadir el plano al grupo
+        },
+        undefined,
+        (error) => {
+            console.error('Error al cargar el modelo:', error);
+        }
+        );
+
+        this.lightSwitch_model;  
+        loader.load(
+        'resources/light_switch/scene.gltf',
+        (gltf) => {
+            this.lightSwitch_model = gltf.scene;          
+            this.lightSwitch_model.rotation.y = Math.PI/2;
+            
+            this.lightSwitch_model.scale.set(0.0015, 0.0015, 0.0015); // Escalar el modelo
+            this.lightSwitch_model.position.set(-11.36, 4.4, 14.21);
+            //scene.add(this.television_model); // Agregar el modelo a la escena
+            this.group.add(this.lightSwitch_model);  // Añadir el plano al grupo
+        },
+        undefined,
+        (error) => {
+            console.error('Error al cargar el modelo:', error);
+        }
+        );
         
         scene.add(this.group);  // Añadir el grupo a la escena
+
+
+        // Crear el mesh transparente para los cuadros
+        const geometry = new THREE.BoxGeometry(5.5, 4, 0.2);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0 });
+        this.diplomas_mesh = new THREE.Mesh(geometry, material);
+        this.diplomas_mesh.position.set(-4.7, 9.3, -3.5); // Ajustar la posición según sea necesario
+        this.group.add(this.diplomas_mesh); // Añadir el mesh transparente al grupo
+
+        scene.add(this.group); // Añadir el grupo a la escena
 
 
         this.lights(scene);
         this.computerCanvas(loader);
         this.televisionCanvas(loader);
-        this.addTextToObject(scene, 'Texto sobre el objeto', { x: 1, y: 2, z: 3 });
+        //this.addTextToObject(scene, 'Texto sobre el objeto', { x: 1, y: 2, z: 3 });
     }
 
     addTextToObject(scene, text, position) {
@@ -301,7 +370,8 @@ class Habitacion{
 
     lights(scene){
         //const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        this.ambientLight = new THREE.AmbientLight(0x4E63CA, 0.3);
+        //this.ambientLight = new THREE.AmbientLight(0x4E63CA, 0.3);
+        this.ambientLight = new THREE.AmbientLight(0xE5E2D6, 0.5);
         scene.add(this.ambientLight);
         //scene.add(ambientLight);
 
@@ -345,6 +415,14 @@ class Habitacion{
         this.floorLamp_light1.position.set(-10.7, 6.46, -0.74);
         scene.add(this.floorLamp_light1);
 
+        this.interruptorDia_light = new THREE.PointLight(0xFF8800, 0, 0, 2);
+        this.interruptorDia_light.position.set(-11.25, 5.11, 14.21);
+        scene.add(this.interruptorDia_light);
+
+        this.interruptorNoche_light = new THREE.PointLight(0x0063E6, 0.4, 0, 2);
+        this.interruptorNoche_light.position.set(-11.25, 3.75, 14.21);
+        scene.add(this.interruptorNoche_light);
+
         /*this.floorLamp_light2 = new THREE.PointLight(0xFEFA90, 1.5, 0, 2);
         this.floorLamp_light2.position.set(-9, 3.5, -1.74);
         scene.add(this.floorLamp_light2);*/
@@ -387,7 +465,7 @@ class Habitacion{
                     this.saveCamarasPosition(camera);
                     camera.position.x = -2.9;
                     camera.position.y = 5.45;
-                    camera.position.z = 1.2;
+                    camera.position.z = 1.3;
                     //camera.rotation.x = -0.5;
                     camera.lookAt(this.computer_model.position); // Hacer que la cámara mire hacia el objeto
                     camera.position.x = -3.2;
@@ -413,7 +491,7 @@ class Habitacion{
                     camera.position.lerp(this.targetPosition, 0.1);*/
                     console.log("TV");
                     this.saveCamarasPosition(camera);
-                    camera.position.x = 6.5;
+                    camera.position.x = 6.4;
                     camera.position.y = 3.95;
                     camera.position.z = 7;
                     //
@@ -431,7 +509,39 @@ class Habitacion{
                 }
             }
             // Calcular las intersecciones
-        
+            if(this.diplomas_mesh != null){
+                this.diplomas_mesh_intersects = this.raycaster.intersectObject(this.diplomas_mesh, true);
+                if(this.diplomas_mesh_intersects.length > 0){
+                    console.log("Diplomas");
+                    this.saveCamarasPosition(camera);
+                    camera.position.x = -4.7;
+                    camera.position.y = 9.3;
+                    camera.position.z = 0;
+                    //
+                    camera.lookAt(this.diplomas_mesh.position); // Hacer que la cámara mire hacia el objeto
+                    this.centrado = true;
+
+                    this.hidePointer();
+                    this.controls.unlock();
+
+                    this.salirMensaje.style.display = 'block';
+                    //camera.rotation.y = -Math.PI/2;
+                    //camera.position.z = -3.5;
+                }
+            }
+
+            if(this.lightSwitch_model != null){
+                this.lightSwitch_model_intersects = this.raycaster.intersectObject(this.lightSwitch_model, true);
+                if(this.lightSwitch_model_intersects.length > 0){
+                    if(this.deNoche){   //Si es de noche
+                        this.modoDia();
+                        this.deNoche = false;
+                    }else{
+                        this.modoNoche();
+                        this.deNoche = true;
+                    }
+                }
+            }
 
             /*this.intersects2 = this.raycaster.intersectObject(this.officeLamp_model, true);
 
@@ -441,6 +551,27 @@ class Habitacion{
             }*/
         }
     }
+
+    modoNoche() {
+        if (this.ambientLight) {
+            this.ambientLight.color.setHex(0x4E63CA);
+            this.ambientLight.intensity = 0.3;
+            this.interruptorDia_light.intensity = 0.3;
+            this.interruptorNoche_light.intensity = 0;
+        }
+        console.log("Noche");
+    }
+
+    modoDia() {
+        if (this.ambientLight) {
+            this.ambientLight.color.setHex(0xE5E2D6);
+            this.ambientLight.intensity = 0.5;
+            this.interruptorDia_light.intensity = 0;
+            this.interruptorNoche_light.intensity = 0.4;
+        }
+        console.log("Dia");
+    }
+
     showPointer() {
         const point = document.getElementById("center-point");
         if (point) {
@@ -454,6 +585,74 @@ class Habitacion{
             point.style.display = 'none';
         }
     }
+
+     // Método para manejar el inicio del toque
+    /* handleTouchStart(event) {
+        if (!this.centrado) {
+            this.touchStartX = event.touches[0].clientX;
+            this.touchStartY = event.touches[0].clientY;
+        }
+    }
+
+    // Método para manejar el movimiento del toque
+    handleTouchMove(event) {
+        if (!this.centrado) {
+            if (!this.touchStartX || !this.touchStartY) {
+                return;
+            }
+
+            const touchEndX = event.touches[0].clientX;
+            const touchEndY = event.touches[0].clientY;
+
+            const diffX = this.touchStartX - touchEndX;
+            const diffY = this.touchStartY - touchEndY;
+
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                // Movimiento horizontal
+                if (diffX > 0) {
+                    // Deslizar a la izquierda
+                    this.moveLeft = true;
+                    this.moveRight = false;
+                } else {
+                    // Deslizar a la derecha
+                    this.moveRight = true;
+                    this.moveLeft = false;
+                }
+            } else {
+                // Movimiento vertical
+                if (diffY > 0) {
+                    // Deslizar hacia arriba
+                    this.moveForward = true;
+                    this.moveBackward = false;
+                } else {
+                    // Deslizar hacia abajo
+                    this.moveBackward = true;
+                    this.moveForward = false;
+                }
+            }
+
+            // Resetear las posiciones de inicio del toque
+            this.touchStartX = null;
+            this.touchStartY = null;
+        }
+    }
+
+    // Método para manejar el final del toque
+    handleTouchEnd(event) {
+        if (!this.centrado) {
+            this.moveForward = false;
+            this.moveBackward = false;
+            this.moveLeft = false;
+            this.moveRight = false;
+        }
+    }
+
+    // Método para manejar el toque (clic) en la pantalla
+    handleTouchTap(event) {
+        if (!this.centrado) {
+            this.controls.lock();
+        }
+    }*/
     
 }
 export default Habitacion;

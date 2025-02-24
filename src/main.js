@@ -83,6 +83,22 @@ document.addEventListener('click', (event) => {
 const point = document.getElementById("center-point");//document.createElement('div');
 
 
+//Requiere desactivar el pointerlock para moviles
+/*document.addEventListener('touchstart', (event) => {
+  habitacion.handleTouchStart(event);
+});
+
+document.addEventListener('touchmove', (event) => {
+  habitacion.handleTouchMove(event);
+});
+
+document.addEventListener('touchend', (event) => {
+  habitacion.handleTouchEnd(event);
+});
+
+document.addEventListener('touchstart', (event) => {
+  habitacion.handleTouchTap(event);
+});*/
 /*function showPointer(){  
     point.style.display = 'block';  
 }

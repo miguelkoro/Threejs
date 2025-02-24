@@ -6,9 +6,10 @@
 body {
   margin: 0;
   background: rgb(0,0,0);
- /* background: rgb(30,61,214);
+  /* background: rgb(30,61,214);
   background: radial-gradient(circle, rgba(30,61,214,1) 0%, rgba(189,17,52,1) 100%);*/
 }
+
 .progress-bar-container {
   position: absolute;
   left: 50%;
@@ -25,37 +26,45 @@ body {
   align-items: center;
 }
 
-#titulo{
+#titulo {
   position: absolute;
-  top: 5%;
+  top: 2%;
   left: 50%;
   transform: translateX(-50%);
   background-color: transparent; /* Fondo transparente */
   color: rgb(255, 255, 255);
-  font-size: 1.8rem;
+  font-size: 1.5vw; /* Tamaño relativo al ancho de la ventana */
   font-family: 'PixelFont', sans-serif;
   text-align: center;
 }
 
+#titulo h1 {
+  margin-bottom: 0.3vh; /* Reducir el margen inferior del h1 */
+}
+
+#titulo p {
+  margin-top: 0; /* Eliminar el margen superior del p */
+}
+
 #progress-bar {
-  width: 25%;
-  margin-top: 0.5%;
-  height: 2%;
+  width: 25vw; /* Ancho relativo al ancho de la ventana */
+  margin-top: 1vh; /* Margen superior relativo a la altura de la ventana */
+  height: 2vh; /* Altura relativa a la altura de la ventana */
   background-color: white;
 }
 
 label {
   color: rgb(255, 255, 255);
-  font-size: 2.5rem;
+  font-size: 3vw; /* Tamaño relativo al ancho de la ventana */
   font-family: 'PixelFont', sans-serif; 
 }
 
 #center-point {
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 0.3vw; /* Ancho relativo al ancho de la ventana */
+  height: 0.3vw; /* Altura relativa al ancho de la ventana */
   background-color: rgb(77, 241, 85);
-  border: 1px solid rgba(255, 255, 255, 0.5); /* Borde verde ligero */
+  border: 0.1vw solid rgba(255, 255, 255, 0.5); /* Borde verde ligero */
   border-radius: 50%;
   left: 50%;
   top: 50%;
@@ -64,13 +73,13 @@ label {
 }
 
 #continue-button {
-  margin-top: 1rem;
-  padding: 1rem 2rem; /* Hacer el botón más grande */
-  font-size: 1.5rem; /* Aumentar el tamaño de la fuente */
+  margin-top: 2vh; /* Margen superior relativo a la altura de la ventana */
+  padding: 1vh 2vw; /* Padding relativo a la altura y ancho de la ventana */
+  font-size: 2vw; /* Tamaño relativo al ancho de la ventana */
   font-family: 'PixelFont', sans-serif;
   color: white;
   background-color: transparent; /* Fondo transparente */
-  border: 2px dashed white; /* Borde cuadriculado */
+  border: 0.4vw dashed white; /* Borde cuadriculado */
   cursor: pointer;
 }
 
@@ -80,13 +89,15 @@ label {
 
 #salir {
   position: absolute;
-  bottom: 3%;
+  bottom: 2%;
   left: 50%;
   transform: translateX(-50%);
-  background-color: transparent; /* Fondo transparente */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente oscuro */
   color: rgb(255, 255, 255);
-  font-size: 1.5rem;
+  font-size: 2vw; /* Tamaño relativo al ancho de la ventana */
   font-family: 'PixelFont', sans-serif;
   text-align: center;
+  padding: 1vh 2vw; /* Añadir padding relativo a la altura y ancho de la ventana */
+  border-radius: 1vw; /* Añadir bordes redondeados relativos al ancho de la ventana */
   display: none; /* Ocultar inicialmente */
 }
