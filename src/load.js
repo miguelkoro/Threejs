@@ -25,6 +25,7 @@ class Load{
         
             const progressBar = document.getElementById('progress-bar');
             const continueButton = document.getElementById('continue-button');
+            const pistaMovimiento = document.getElementById('pista-movimiento');
         
             loadingManager.onProgress = function (url, loaded, total) {
                 progressBar.value = (loaded / total) * 100;
@@ -38,6 +39,7 @@ class Load{
                 label.style.display = 'none';
                 progressBar.style.display = 'none';
                 continueButton.style.display = 'block';
+                pistaMovimiento.style.display = 'block';
 
             };
             return loader;

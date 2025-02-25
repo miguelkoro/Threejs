@@ -543,6 +543,29 @@ class Habitacion{
                 }
             }
 
+            if(this.board_model != null){
+                this.board_model_intersects = this.raycaster.intersectObject(this.board_model, true);
+                if(this.board_model_intersects.length > 0){
+                    console.log("Tablon");
+                    this.saveCamarasPosition(camera);
+                    camera.position.x = 4.7;
+                    camera.position.y = 8.3;
+                    camera.position.z = 1;
+                    //
+                    camera.lookAt(this.board_model.position); // Hacer que la cámara mire hacia el objeto
+                    //camera.rotation.z = -Math.PI/2;
+                    //camera.position.z = 7.4;
+                    //camera.rotation.y = -0.5;
+                    //this.moverCamara = false;
+                    this.centrado = true;
+
+                    this.hidePointer();
+                    this.controls.unlock();
+
+                    this.salirMensaje.style.display = 'block';
+                }
+            }
+
             /*this.intersects2 = this.raycaster.intersectObject(this.officeLamp_model, true);
 
             if (this.intersects2.length > 0) {
