@@ -74,7 +74,7 @@ class ordenador{
             this.barraComputer.width, this.barraComputer.height/2,  //Coordenadas de recorte finales
             0, this.ctxComputer.height-this.barraComputer.height/2,  //Posicion de la imagen en la pantalla
             this.barraComputer.width, this.barraComputer.height/2);     //Tamaño de la imagen*/
-        this.ctxComputer.drawImage(this.barraComputer, 
+        /*this.ctxComputer.drawImage(this.barraComputer, 
             0, 0, //Coordenadas de recorte iniciales
             this.barraComputer.width, this.barraComputer.height/2,  //Coordenadas de recorte finales
             0, this.ctxComputer.height-this.barraComputer.height/4,  //Posicion de la imagen en la pantalla
