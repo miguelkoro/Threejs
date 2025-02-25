@@ -35,12 +35,17 @@ class Border{
         ctx.fillRect(this.position.x, this.position.y, this.width,this.lineWidth);
         ctx.fillRect(this.position.x, this.position.y+this.height, this.width,this.lineWidth);
     }*/
-        drawRectangle(){
-            this.ctx.fillStyle=this.color;
-            this.ctx.fillRect(this.position.x, this.position.y,  //Coordenadas inicial del rectangulo
-                this.width, this.height,   //Ancho y alto del rectangulo
-                this.ctx.width, this.ctx.height,    //Posicion del rectangulo en la pantalla
-                this.ctx.width, this.ctx.height);  //Tamaño del rectangulo
-        }
+    drawRectangle(){
+        this.ctx.fillStyle=this.color;
+        this.ctx.fillRect(this.position.x, this.position.y,  //Coordenadas inicial del rectangulo
+            this.width, this.height,   //Ancho y alto del rectangulo
+            this.ctx.width, this.ctx.height,    //Posicion del rectangulo en la pantalla
+            this.ctx.width, this.ctx.height);  //Tamaño del rectangulo
+    }
+
+    isMouseOver(mouseX, mouseY) {
+        return mouseX >= this.position.x && mouseX <= this.position.x + this.width &&
+               mouseY >= this.position.y && mouseY <= this.position.y + this.height;
+    }
 }
 export default Border;

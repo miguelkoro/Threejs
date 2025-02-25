@@ -22,6 +22,7 @@ window.continueLoading = function() {
   document.querySelector('.progress-bar-container').style.display = 'none';
   document.getElementById('titulo').style.display = 'none';
   document.getElementById('continue-button').style.display = 'none';
+  document.getElementById('pista-movimiento').style.display = 'none';
   // Aquí puedes agregar el código para mostrar el contenido de la página
   //const titulo = document.getElementById('titulo');
   cargaRealizada = true;

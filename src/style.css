@@ -101,3 +101,17 @@ label {
   border-radius: 1vw; /* Añadir bordes redondeados relativos al ancho de la ventana */
   display: none; /* Ocultar inicialmente */
 }
+
+#pista-movimiento{
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgb(255, 255, 255);
+  font-size: 2.1vw; /* Tamaño relativo al ancho de la ventana */
+  font-family: 'PixelFont', sans-serif;
+  text-align: center;
+  padding: 1vh 2vw; /* Añadir padding relativo a la altura y ancho de la ventana */
+  border-radius: 1vw; /* Añadir bordes redondeados relativos al ancho de la ventana */
+  display: none; /* Ocultar inicialmente */
+}

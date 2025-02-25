@@ -1,4 +1,4 @@
-class Border{
+/*class Border{
     constructor(position,width,height){
         this.position={x:(position.x), y:(position.y)}
         this.width=(width);   //La altura y la anchura seran la diferencia de los puntos
@@ -187,5 +187,17 @@ class ImageDraw extends Border{
         ctx.putImageData(imgData, 0, 0);
     }
 
+}*/
+import Border from "./border";
+
+class Imagen extends Border{
+    constructor(image, border){
+        this.image=image;
+        this.border=border;
+    }
+
+    drawImagen(){
+        //this.ctx.drawImage(this.image, this.border.position.x, this.border.position.y);
+    }
 }
-export default ImageDraw;
+export default Imagen;
